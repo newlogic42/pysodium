@@ -485,5 +485,25 @@ class TestPySodium(unittest.TestCase):
         self.assertEqual(crx, stx)
         self.assertEqual(ctx, srx)
 
+    def test_crypto_secretbox_keygen(self):
+        if not pysodium.sodium_version_check(1, 0, 12): return
+
+        key = pysodium.crypto_secretbox_keygen()
+        self.assertEqual(len(key), 32)
+
+    def test_crypto_secretbox_easy(self):
+        nonce = b'\x00' * pysodium.crypto_secretbox_NONCEBYTES
+        key = pysodium.crypto_secretbox_keygen()
+        pysodium.crypto_secretbox_easy(b'howdy', nonce, key)
+        pysodium.crypto_secretbox_easy(b'howdy' * 16, nonce, key)
+
+    def test_crypto_secretbox_open_easy(self):
+        k = pysodium.randombytes(pysodium.crypto_secretbox_KEYBYTES)
+        n = pysodium.randombytes(pysodium.crypto_secretbox_NONCEBYTES)
+        c = pysodium.crypto_secretbox_easy("howdy".encode('UTF-8'), n, k)
+        res = pysodium.crypto_secretbox_open_easy(c, n, k)
+        assert res == b"howdy"
+
+
 if __name__ == '__main__':
     unittest.main()

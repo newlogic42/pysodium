@@ -1070,3 +1070,49 @@ def crypto_kx_server_session_keys(server_pk, server_sk, client_pk):
     tx = ctypes.create_string_buffer(crypto_kx_SESSIONKEYBYTES)
     __check(sodium.crypto_kx_server_session_keys(rx, tx, server_pk, server_sk, client_pk))
     return rx.raw, tx.raw
+
+
+# void crypto_secretbox_keygen(unsigned char k[crypto_secretbox_KEYBYTES]);
+@sodium_version(1, 0, 12)
+def crypto_secretbox_keygen():
+    key = ctypes.create_string_buffer(crypto_secretbox_KEYBYTES)
+    sodium.crypto_secretbox_keygen(ctypes.byref(key))
+    return key.raw
+
+
+def crypto_scalarmult_base(n):
+    if n is None:
+        raise ValueError("invalid parameters")
+    if len(n) != crypto_scalarmult_SCALARBYTES: raise ValueError("truncated scalar")
+    buf = ctypes.create_string_buffer(crypto_scalarmult_BYTES)
+    __check(sodium.crypto_scalarmult_base(ctypes.byref(buf), n))
+    return buf.raw
+
+
+# int crypto_secretbox_easy(unsigned char *c, const unsigned char *m,
+#                           unsigned long long mlen, const unsigned char *n,
+#                           const unsigned char *k);
+def crypto_secretbox_easy(msg, nonce, key):
+    if None in (msg, nonce, key):
+        raise ValueError("invalid parameters")
+    if len(key) != crypto_secretbox_KEYBYTES: raise ValueError("k incorrect size")
+    if len(nonce) != crypto_secretbox_NONCEBYTES: raise ValueError("nonce incorrect size")
+
+    # padded = b"\x00" * crypto_secretbox_MACBYTES + msg
+    c = ctypes.create_string_buffer(len(msg) + crypto_secretbox_MACBYTES)
+    __check(sodium.crypto_secretbox_easy(c, msg, ctypes.c_ulonglong(len(msg)), nonce, key))
+    return c.raw
+
+
+# int crypto_secretbox_open_easy(unsigned char *m, const unsigned char *c,
+#                                unsigned long long clen, const unsigned char *n,
+#                                const unsigned char *k);
+def crypto_secretbox_open_easy(c, nonce, key):
+    if None in (c, nonce, key):
+        raise ValueError("invalid parameters")
+    if len(key) != crypto_secretbox_KEYBYTES: raise ValueError("k incorrect size")
+    if len(nonce) != crypto_secretbox_NONCEBYTES: raise ValueError("nonce incorrect size")
+
+    msg = ctypes.create_string_buffer(len(c) - crypto_secretbox_MACBYTES)
+    __check(sodium.crypto_secretbox_open_easy(msg, c, ctypes.c_ulonglong(len(c)), nonce, key))
+    return msg.raw
