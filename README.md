@@ -1,6 +1,6 @@
 This is a very simple wrapper around libsodium masquerading as nacl.
 
-[![Build Status](https://travis-ci.org/newlogic42/pysodium.svg?branch=master)](https://travis-ci.org/stef/pysodium)
+[![Build Status](https://travis-ci.org/newlogic42/pysodium.svg?branch=master)](https://travis-ci.org/newlogic42/pysodium)
 
 This wrapper requires a pre-installed libsodium from:
 
