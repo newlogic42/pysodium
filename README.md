@@ -1,6 +1,6 @@
 This is a very simple wrapper around libsodium masquerading as nacl.
 
-[![Build Status](https://travis-ci.org/stef/pysodium.svg?branch=master)](https://travis-ci.org/stef/pysodium)
+[![Build Status](https://travis-ci.org/newlogic42/pysodium.svg?branch=master)](https://travis-ci.org/stef/pysodium)
 
 This wrapper requires a pre-installed libsodium from:
 
@@ -46,10 +46,14 @@ crypto_pwhash_scryptsalsa208sha256_str(passwd, opslimit, memlimit)
 crypto_pwhash_scryptsalsa208sha256_str_verify(stored, passwd)
 crypto_pwhash_str(passwd, opslimit, memlimit)
 crypto_pwhash_str_verify(pstr, passwd)
+crypto_scalarmult_base(n)
 crypto_scalarmult_curve25519_base(n)
 crypto_scalarmult_curve25519(n, p)
 crypto_secretbox(msg, nonce, k)
+crypto_secretbox_easy(msg, nonce, k)
+crypto_secretbox_keygen()
 crypto_secretbox_open(c, nonce, k)
+crypto_secretbox_open_easy(c, nonce, k)
 crypto_secretstream_xchacha20poly1305_keygen():
 crypto_secretstream_xchacha20poly1305_init_push(key):
 crypto_secretstream_xchacha20poly1305_init_pull(header, key):
